@@ -3,6 +3,7 @@ package com.example.varianttecnology.androidinstagramfilter;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.BottomSheetDialogFragment;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,7 +16,7 @@ import com.example.varianttecnology.androidinstagramfilter.Interface.EditImageFr
 /**
  * A simple {@link Fragment} subclass.
  */
-public class EditImageFragment extends Fragment implements SeekBar.OnSeekBarChangeListener {
+public class EditImageFragment extends BottomSheetDialogFragment implements SeekBar.OnSeekBarChangeListener {
 
     private EditImageFragmentListener listener;
     SeekBar seekBar_brightness, seekBar_constrant,seekBar_saturation;
@@ -23,6 +24,14 @@ public class EditImageFragment extends Fragment implements SeekBar.OnSeekBarChan
 
     public void setListener(EditImageFragmentListener listener) {
         this.listener = listener;
+    }
+
+    static EditImageFragment instance;
+
+    public static EditImageFragment getInstance() {
+        if (instance == null)
+            instance = new EditImageFragment();
+        return instance;
     }
 
     public EditImageFragment() {
