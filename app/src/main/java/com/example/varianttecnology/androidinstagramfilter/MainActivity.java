@@ -3,6 +3,7 @@ package com.example.varianttecnology.androidinstagramfilter;
 import android.Manifest;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.Typeface;
 import android.net.Uri;
 import android.support.annotation.Nullable;
 import android.support.design.widget.CoordinatorLayout;
@@ -23,6 +24,7 @@ import android.widget.Toast;
 import com.example.varianttecnology.androidinstagramfilter.Adapter.ViewPagerAdapter;
 import com.example.varianttecnology.androidinstagramfilter.Interface.BrushFragmentListener;
 import com.example.varianttecnology.androidinstagramfilter.Interface.EditImageFragmentListener;
+import com.example.varianttecnology.androidinstagramfilter.Interface.EmojiFragmentListener;
 import com.example.varianttecnology.androidinstagramfilter.Interface.FiltersListFragmentListener;
 import com.example.varianttecnology.androidinstagramfilter.Utils.BitmapUtils;
 import com.karumi.dexter.Dexter;
@@ -42,7 +44,7 @@ import ja.burhanrashid52.photoeditor.OnSaveBitmap;
 import ja.burhanrashid52.photoeditor.PhotoEditor;
 import ja.burhanrashid52.photoeditor.PhotoEditorView;
 
-public class MainActivity extends AppCompatActivity implements FiltersListFragmentListener,EditImageFragmentListener, BrushFragmentListener {
+public class MainActivity extends AppCompatActivity implements FiltersListFragmentListener,EditImageFragmentListener, BrushFragmentListener, EmojiFragmentListener {
 
     public static final String pictureName = "flash.jpeg";
     public static final int PERMISSION_PACK_IMAGE = 1000;
@@ -58,7 +60,7 @@ public class MainActivity extends AppCompatActivity implements FiltersListFragme
     EditImageFragment editImageFragment;
 
 
-    CardView btn_filters_list,btn_edit,btn_brush;
+    CardView btn_filters_list,btn_edit,btn_brush,btn_emoji;
 
     int brightrnessFinal = 0;
     float saturationFinal = 1.0f;
@@ -84,6 +86,7 @@ public class MainActivity extends AppCompatActivity implements FiltersListFragme
         photoEditorView = (PhotoEditorView) findViewById(R.id.image_preview);
         photoEditor = new PhotoEditor.Builder(this,photoEditorView)
                 .setPinchTextScalable(true)
+                .setDefaultEmojiTypeface(Typeface.createFromAsset(getAssets(),"emojione-android.ttf"))
                 .build();
 
         coordinatorLayout = (CoordinatorLayout)findViewById(R.id.coordinator);
@@ -91,6 +94,7 @@ public class MainActivity extends AppCompatActivity implements FiltersListFragme
         btn_edit = (CardView)findViewById(R.id.btn_edit);
         btn_filters_list = (CardView)findViewById(R.id.btn_filters_list);
         btn_brush = (CardView)findViewById(R.id.btn_brush);
+        btn_emoji = (CardView)findViewById(R.id.btn_emoji);
 
         btn_filters_list.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -121,6 +125,17 @@ public class MainActivity extends AppCompatActivity implements FiltersListFragme
                 brushFragment.show(getSupportFragmentManager(),brushFragment.getTag());
             }
         });
+
+        btn_emoji.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                EmojiFragment emojiFragment = EmojiFragment.getInstance();
+                emojiFragment.setListener(MainActivity.this);
+                emojiFragment.show(getSupportFragmentManager(),emojiFragment.getTag());
+            }
+        });
+
+
 
 
         loadImage();
@@ -389,5 +404,10 @@ public class MainActivity extends AppCompatActivity implements FiltersListFragme
             photoEditor.brushEraser();
         else
             photoEditor.setBrushDrawingMode(true);
+    }
+
+    @Override
+    public void onEmojiSelected(String emoji) {
+        photoEditor.addEmoji(emoji);
     }
 }
