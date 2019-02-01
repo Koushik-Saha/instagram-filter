@@ -15,7 +15,7 @@
 
         <ImageView
             android:id="@+id/img_frame"
-            android:src="@drawable/card1"
+            android:src="@drawable/card"
             android:layout_marginRight="8dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
@@ -27,8 +27,6 @@
             android:layout_marginRight="8dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
-
-
 
 
     </FrameLayout>

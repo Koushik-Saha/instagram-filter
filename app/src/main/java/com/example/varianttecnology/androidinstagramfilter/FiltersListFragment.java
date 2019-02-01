@@ -39,10 +39,16 @@ public class FiltersListFragment extends BottomSheetDialogFragment implements Fi
     FiltersListFragmentListener listener;
 
     static FiltersListFragment instance;
+    static Bitmap bitmap;
 
-    public static FiltersListFragment getInstance() {
+    public static FiltersListFragment getInstance(Bitmap bitmapSave) {
+        bitmap = bitmapSave;
+
         if (instance == null)
+        {
             instance = new FiltersListFragment();
+        }
+
         return instance;
     }
 
@@ -76,7 +82,7 @@ public class FiltersListFragment extends BottomSheetDialogFragment implements Fi
         recyclerView.setAdapter(adapter);
         
         
-        displayThumbnail(null);
+        displayThumbnail(bitmap);
 
 
         return itemView;

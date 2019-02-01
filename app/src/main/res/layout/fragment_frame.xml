@@ -6,24 +6,21 @@
     tools:context=".FrameFragment">
 
 
-    <LinearLayout
-        android:orientation="vertical"
+<LinearLayout
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/recycler_frame"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"></android.support.v7.widget.RecyclerView>
 
-        <android.support.v7.widget.Recycleriew
-            android:id="@+id/recycler_frame"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+    <Button
+        android:id="@+id/btn_add_frame"
+        android:text="ADD FRAME"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
 
-        </android.support.v7.widget.Recycleriew>
-
-        <Button
-            android:id="@+id/btn_add_frame"
-            android:text="ADD FRAME"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
-
-    </LinearLayout>
-
+</LinearLayout>
 </RelativeLayout>
