@@ -3,6 +3,7 @@ package com.example.varianttecnology.androidinstagramfilter;
 import android.Manifest;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Typeface;
 import android.net.Uri;
 import android.support.annotation.Nullable;
@@ -22,6 +23,7 @@ import android.support.v7.widget.Toolbar;
 import android.widget.Toast;
 
 import com.example.varianttecnology.androidinstagramfilter.Adapter.ViewPagerAdapter;
+import com.example.varianttecnology.androidinstagramfilter.Interface.AddFrameListener;
 import com.example.varianttecnology.androidinstagramfilter.Interface.AddTextFragmentListener;
 import com.example.varianttecnology.androidinstagramfilter.Interface.BrushFragmentListener;
 import com.example.varianttecnology.androidinstagramfilter.Interface.EditImageFragmentListener;
@@ -45,7 +47,7 @@ import ja.burhanrashid52.photoeditor.OnSaveBitmap;
 import ja.burhanrashid52.photoeditor.PhotoEditor;
 import ja.burhanrashid52.photoeditor.PhotoEditorView;
 
-public class MainActivity extends AppCompatActivity implements FiltersListFragmentListener,EditImageFragmentListener, BrushFragmentListener, EmojiFragmentListener, AddTextFragmentListener {
+public class MainActivity extends AppCompatActivity implements FiltersListFragmentListener,EditImageFragmentListener, BrushFragmentListener, EmojiFragmentListener, AddTextFragmentListener, AddFrameListener {
 
     public static final String pictureName = "flash.jpeg";
     public static final int PERMISSION_PACK_IMAGE = 1000;
@@ -62,7 +64,7 @@ public class MainActivity extends AppCompatActivity implements FiltersListFragme
     EditImageFragment editImageFragment;
 
 
-    CardView btn_filters_list,btn_edit,btn_brush,btn_emoji,btn_add_text,btn_add_image;
+    CardView btn_filters_list,btn_edit,btn_brush,btn_emoji,btn_add_text,btn_add_image,btn_add_frame;
 
     int brightrnessFinal = 0;
     float saturationFinal = 1.0f;
@@ -99,6 +101,7 @@ public class MainActivity extends AppCompatActivity implements FiltersListFragme
         btn_emoji = (CardView)findViewById(R.id.btn_emoji);
         btn_add_text = (CardView)findViewById(R.id.btn_add_text);
         btn_add_image = (CardView)findViewById(R.id.btn_add_image);
+        btn_add_frame = (CardView)findViewById(R.id.btn_add_frame);
 
         btn_filters_list.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -156,6 +159,15 @@ public class MainActivity extends AppCompatActivity implements FiltersListFragme
             }
         });
 
+
+        btn_add_frame.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                FrameFragment frameFragment = FrameFragment.getInstance();
+                frameFragment.setListener(MainActivity.this);
+                frameFragment.show(getSupportFragmentManager(),frameFragment.getTag());
+            }
+        });
 
 
 
@@ -464,5 +476,11 @@ public class MainActivity extends AppCompatActivity implements FiltersListFragme
     @Override
     public void onAddTextButtonClick(Typeface typeface, String text, int color) {
         photoEditor.addText(typeface,text,color);
+    }
+
+    @Override
+    public void onAddFrame(int frame) {
+        Bitmap bitmap = BitmapFactory.decodeResource(getResources(),frame);
+        photoEditor.addImage(bitmap);
     }
 }

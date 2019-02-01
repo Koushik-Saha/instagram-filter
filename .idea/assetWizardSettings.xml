@@ -59,8 +59,7 @@
                         </option>
                         <option name="values">
                           <map>
-                            <entry key="color" value="ffffff" />
-                            <entry key="outputName" value="ic_check_white_24dp" />
+                            <entry key="outputName" value="ic_check_black_24dp" />
                             <entry key="sourceFile" value="C:\Users\VARIANT TECNOLOGY" />
                           </map>
                         </option>
