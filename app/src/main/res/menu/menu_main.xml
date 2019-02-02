@@ -6,8 +6,18 @@
     >
 
     <item
+        android:id="@+id/action_camera"
+        android:orderInCategory="99"
+        android:icon="@drawable/ic_camera_alt_black_24dp"
+        app:showAsAction="always"
+        android:enabled="true"
+        android:title="CAMERA"/>
+
+
+    <item
         android:id="@+id/action_open"
         android:orderInCategory="100"
+        android:icon="@drawable/ic_open_in_browser_black_24dp"
         app:showAsAction="always"
         android:enabled="true"
         android:title="OPEN"/>
@@ -15,6 +25,7 @@
     <item
         android:id="@+id/action_save"
         android:orderInCategory="101"
+        android:icon="@drawable/ic_save_black_24dp"
         app:showAsAction="always"
         android:enabled="true"
         android:title="SAVE"/>

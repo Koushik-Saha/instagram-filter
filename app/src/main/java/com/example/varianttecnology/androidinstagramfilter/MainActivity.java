@@ -1,11 +1,14 @@
 package com.example.varianttecnology.androidinstagramfilter;
 
 import android.Manifest;
+import android.content.ContentValues;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Typeface;
+import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
+import android.provider.MediaStore;
 import android.support.annotation.Nullable;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
@@ -55,6 +58,7 @@ public class MainActivity extends AppCompatActivity implements FiltersListFragme
     public static final String pictureName = "flash.jpeg";
     public static final int PERMISSION_PACK_IMAGE = 1000;
     public static final int PERMISSION_INSERT_IMAGE = 1001;
+    private static final int CAMERA_REQUEST = 1002;
 
     PhotoEditorView photoEditorView;
     PhotoEditor photoEditor;
@@ -329,12 +333,50 @@ public class MainActivity extends AppCompatActivity implements FiltersListFragme
             openImageFromGallery();
             return true;
         }
-        if (id == R.id.action_save)
+        else if (id == R.id.action_save)
         {
             saveImageToGallery();
             return true;
         }
+        else if (id == R.id.action_camera)
+        {
+            openCamera();
+            return true;
+        }
         return super.onOptionsItemSelected(item);
+    }
+
+    private void openCamera() {
+        Dexter.withActivity(this)
+                .withPermissions(Manifest.permission.CAMERA,
+                        Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                .withListener(new MultiplePermissionsListener() {
+                    @Override
+                    public void onPermissionsChecked(MultiplePermissionsReport report) {
+                        if (report.areAllPermissionsGranted())
+                        {
+                            ContentValues values = new ContentValues();
+                            values.put(MediaStore.Images.Media.TITLE,"New Picture");
+                            values.put(MediaStore.Images.Media.DESCRIPTION,"From Camera");
+                            image_selected_uri = getContentResolver().insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
+                                    values);
+                            Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                            cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT,image_selected_uri);
+                            startActivityForResult(cameraIntent,CAMERA_REQUEST);
+                        }
+                        else
+                        {
+                            Toast.makeText(MainActivity.this, "Permission Denied", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+
+                    @Override
+                    public void onPermissionRationaleShouldBeShown(List<PermissionRequest> permissions, PermissionToken token) {
+                        token.continuePermissionRequest();
+                    }
+                })
+
+                .check();
     }
 
     private void saveImageToGallery() {
@@ -403,8 +445,6 @@ public class MainActivity extends AppCompatActivity implements FiltersListFragme
                 })
 
                 .check();
-
-
     }
 
     private void openImage(String path) {
@@ -467,6 +507,24 @@ public class MainActivity extends AppCompatActivity implements FiltersListFragme
                 filtersListFragment = FiltersListFragment.getInstance(originalBitmap);
                 filtersListFragment.setListener(this);
             }
+            if (requestCode == CAMERA_REQUEST) {
+                Bitmap bitmap = BitmapUtils.getBitmapFromGallery(this, image_selected_uri, 800, 800);
+
+                //clear bitmap memory
+                originalBitmap.recycle();
+                finalBitmap.recycle();
+                filteredBitmap.recycle();
+
+                originalBitmap = bitmap.copy(Bitmap.Config.ARGB_8888, true);
+                finalBitmap = originalBitmap.copy(Bitmap.Config.ARGB_8888, true);
+                filteredBitmap = originalBitmap.copy(Bitmap.Config.ARGB_8888, true);
+                photoEditorView.getSource().setImageBitmap(originalBitmap);
+                bitmap.recycle();
+
+
+                filtersListFragment = FiltersListFragment.getInstance(originalBitmap);
+                filtersListFragment.setListener(this);
+            }
             else if (requestCode == PERMISSION_INSERT_IMAGE)
             {
                 Bitmap bitmap = BitmapUtils.getBitmapFromGallery(this,data.getData(),100,100);
@@ -494,7 +552,18 @@ public class MainActivity extends AppCompatActivity implements FiltersListFragme
     private void handleCropResult(Intent data) {
         final Uri resultUri = UCrop.getOutput(data);
         if (resultUri != null)
+        {
             photoEditorView.getSource().setImageURI(resultUri);
+            //Fix error return original images after crop and use Filters / Edit images
+            Bitmap bitmap = ((BitmapDrawable)photoEditorView.getSource().getDrawable()).getBitmap();
+            originalBitmap = bitmap.copy(Bitmap.Config.ARGB_8888,true);
+            filteredBitmap = originalBitmap;
+            finalBitmap = originalBitmap;
+
+
+            
+        }
+
         else
             Toast.makeText(this, "Cannot retrieve crop image", Toast.LENGTH_SHORT).show();
     }
