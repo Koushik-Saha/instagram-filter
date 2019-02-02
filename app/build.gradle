@@ -39,5 +39,7 @@ dependencies {
 
     implementation 'com.github.rockerhieu:emojicon:v1.4.2'
 
+    implementation 'com.github.yalantis:ucrop:2.2.2-native'
+
 
 }
