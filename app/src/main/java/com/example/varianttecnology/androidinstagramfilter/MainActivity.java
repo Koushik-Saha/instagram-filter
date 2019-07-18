@@ -561,7 +561,7 @@ public class MainActivity extends AppCompatActivity implements FiltersListFragme
             finalBitmap = originalBitmap;
 
 
-            
+
         }
 
         else
